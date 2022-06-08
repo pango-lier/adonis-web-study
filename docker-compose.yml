@@ -8,8 +8,8 @@ services:
     volumes:
       - mysql_volume:/var/lib/mysql/
     environment:
-      MYSQL_ROOT_PASSWORD: '${DB_PASSWORD}'
-      MYSQL_DATABASE: '${DB_DATABASE}'
+      MYSQL_ROOT_PASSWORD: '${MYSQL_PASSWORD}'
+      MYSQL_DATABASE: '${MYSQL_DB_NAME}'
     ports:
       - 3306:3306
 
