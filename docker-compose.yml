@@ -2,14 +2,19 @@
 version: '3.8'
 
 services:
-  mysql:
+  db:
     container_name: adonis_mysql
     image: mysql:8
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
     volumes:
-      - mysql_volume:/var/lib/mysql/
+      - dbdump:/var/lib/mysql/
     environment:
       MYSQL_ROOT_PASSWORD: '${MYSQL_PASSWORD}'
-      MYSQL_DATABASE: '${MYSQL_DB_NAME}'
+      MYSQL_DATABASE: '${MYSQL_DATABASE}'
+      MYSQL_USER: '${MYSQL_USER}'
+      MYSQL_PASSWORD: '${MYSQL_PASSWORD}'
+      MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
     ports:
       - 3306:3306
 
@@ -19,7 +24,7 @@ services:
     ports:
       - 8080:8080
     depends_on:
-      - mysql
+      - db
 
   redis:
     container_name: redis
@@ -33,7 +38,7 @@ services:
     container_name: adonis_app
     restart: always
     depends_on:
-      - mysql
+      - db
       - redis
     build:
       context: .
@@ -43,13 +48,11 @@ services:
       - 9229:9229
     env_file:
       - .env
-    environment:
-      - PG_HOST=mysql
-      - REDIS_HOST=redis
     volumes:
       - ./:/home/node/app
     command: dumb-init node ace serve --watch --node-args="--inspect=0.0.0.0"
 
 volumes:
-  mysql_volume:
+  dbdump:
+    driver: local
   redis_volume:
