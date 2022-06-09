@@ -6,7 +6,7 @@ services:
     container_name: adonis_mysql
     image: mysql:8
     command: --default-authentication-plugin=mysql_native_password
-    restart: always
+    restart: unless-stopped
     volumes:
       - dbdump:/var/lib/mysql/
     environment:
@@ -20,6 +20,7 @@ services:
 
   adminer:
     container_name: adonis_adminer
+    restart: unless-stopped
     image: adminer:latest
     ports:
       - 8080:8080
@@ -28,6 +29,7 @@ services:
 
   redis:
     container_name: redis
+    restart: unless-stopped
     image: redis:6-alpine
     volumes:
       - redis_volume:/data
@@ -36,7 +38,7 @@ services:
 
   adonis_app:
     container_name: adonis_app
-    restart: always
+    restart: unless-stopped
     depends_on:
       - db
       - redis
