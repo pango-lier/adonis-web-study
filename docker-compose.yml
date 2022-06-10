@@ -1,6 +1,10 @@
 
 version: '3.8'
 
+networks:
+  amazonads:
+    external: false
+
 services:
   db:
     container_name: adonis_mysql
@@ -33,9 +37,8 @@ services:
     image: redis:6-alpine
     volumes:
       - redis_volume:/data
-    ports:
-      - 6378:6379
-
+    networks:
+      - amazonads
   adonis_app:
     container_name: adonis_app
     restart: unless-stopped
@@ -53,7 +56,8 @@ services:
     volumes:
       - ./:/home/node/app
     command: dumb-init node ace serve --watch --node-args="--inspect=0.0.0.0"
-
+    networks:
+      - amazonads
 volumes:
   dbdump:
     driver: local

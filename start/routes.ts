@@ -18,8 +18,12 @@
 |
 */
 
+import Redis from '@ioc:Adonis/Addons/Redis'
 import Route from '@ioc:Adonis/Core/Route'
 
 Route.get('/', async ({ view }) => {
+  await Redis.set('foo', 'bar')
+  const value = await Redis.get('foo')
+  console.log(value)
   return view.render('index')
 })
